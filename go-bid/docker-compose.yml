@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-bid
+    ports:
+      - 9090:9090
+    volumes:
+      - ./config.json:/app/config.json
+  postgres:
+    image: postgres
+    container_name: go_bid_postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: go_db
+    volumes:
+       - ./article.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432" 
+  redis:
+    image: redis
+    environment:
+      REDIS_PASSWORD: redis
+      REDIS_HOST: localhost
+      REDIS_DB: go_db
+    ports:
+      - 6379:6379
