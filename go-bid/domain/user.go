@@ -13,6 +13,7 @@ type User struct {
 // UserRepository represent the user's repository contract
 type UserRepository interface {
 	SignIn(ctx context.Context, username, password string) (string, error)
+	CheckBid(ctx context.Context, userId int64) (User, error)
 }
 
 // UserUsecase represent the bid's usecases

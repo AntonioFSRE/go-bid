@@ -11,7 +11,6 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 
-	_userRepo "github.com/AntonioFSRE/go-bid/auth/repository/postgres"
 	_bidHttpDelivery "github.com/AntonioFSRE/go-bid/bid/delivery/http"
 	_bidHttpDeliveryMiddleware "github.com/AntonioFSRE/go-bid/bid/delivery/http/middleware"
 	_bidRepo "github.com/AntonioFSRE/go-bid/bid/repository/postgres"
@@ -39,7 +38,7 @@ func main() {
 	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbHost, dbPort, dbName)
 	val := url.Values{}
 	val.Add("parseTime", "1")
-	val.Add("loc", "Asia/Jakarta")
+	val.Add("loc", "Europe/Zagreb")
 	dsn := fmt.Sprintf("%s?%s", connection, val.Encode())
 	dbConn, err := sql.Open(`postgres`, dsn)
 

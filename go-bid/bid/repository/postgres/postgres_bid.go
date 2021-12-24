@@ -4,9 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"time"
 
-	"github.com/AntonioFSRE/go-bid/bid/repository"
 	"github.com/AntonioFSRE/go-bid/domain"
 	"github.com/sirupsen/logrus"
 )
@@ -59,27 +57,6 @@ func (m *postgresBidRepository) fetch(ctx context.Context, query string, args ..
 	return result, nil
 }
 
-func (m *postgresBidRepository) Fetch(ctx context.Context, cursor string, num int64) (res []domain.Bid, nextCursor string, err error) {
-	query := `SELECT bidId,ttl,price, userId, setAt
-  						FROM bid`
-
-	decodedCursor, err := repository.DecodeCursor(cursor)
-	if err != nil && cursor != "" {
-		return nil, "", domain.ErrBadParamInput
-	}
-
-	res, err = m.fetch(ctx, query, decodedCursor, num)
-	if err != nil {
-		return nil, "", err
-	}
-
-	if len(res) == int(num) {
-		nextCursor = repository.EncodeCursor(res[len(res)-1].setAt)
-	}
-
-	return
-}
-
 func (m *postgresBidRepository) CheckBid(ctx context.Context, bidId int64) (res domain.Bid, err error) {
 	query := `SELECT bidId,ttl,price
   						FROM bid WHERE bidId = ?`
@@ -99,13 +76,13 @@ func (m *postgresBidRepository) CheckBid(ctx context.Context, bidId int64) (res 
 }
 
 func (m *postgresBidRepository) CreateNewBid(ctx context.Context, b *domain.Bid) (err error) {
-	query := `INSERT  bid SET  bidId=? , ttl=? ,price=? ,setAt=?`
+	query := `INSERT  bid SET  bidId=? , ttl=? ,price=? ,setAt=? ,userId=?`
 	stmt, err := m.Conn.PrepareContext(ctx, query)
 	if err != nil {
 		return
 	}
 
-	res, err := stmt.ExecContext(ctx, b.bidId, b.ttl, b.price, time.Now())
+	res, err := stmt.ExecContext(ctx, b.bidId, b.ttl, b.price, b.setAt, b.User.userId)
 	if err != nil {
 		return
 	}
@@ -118,14 +95,14 @@ func (m *postgresBidRepository) CreateNewBid(ctx context.Context, b *domain.Bid)
 }
 
 func (m *postgresBidRepository) PlaceBid(ctx context.Context, u *domain.Bid) (err error) {
-	query := `UPDATE bid set price=? WHERE bidId = ?`
+	query := `UPDATE bid set price=?, userId=? WHERE bidId = ?`
 
 	stmt, err := m.Conn.PrepareContext(ctx, query)
 	if err != nil {
 		return
 	}
 
-	res, err := stmt.ExecContext(ctx, u.price, u.bidId)
+	res, err := stmt.ExecContext(ctx, u.price, u.User.bidId)
 	if err != nil {
 		return
 	}
