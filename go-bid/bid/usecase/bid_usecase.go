@@ -13,10 +13,10 @@ type bidUsecase struct {
 	contextTimeout time.Duration
 }
 
-func NewBidsecase(b domain.BidRepository, u domain.UserRepository, timeout time.Duration) domain.BidUsecase {
+func NewBidUsecase(b domain.BidRepository, u domain.UserRepository, timeout time.Duration) domain.BidUsecase {
 	return &bidUsecase{
 		bidRepo:    b,
-		userRepo:     u,
+		userRepo:   u,
 		contextTimeout: timeout,
 	}
 }
@@ -30,7 +30,7 @@ func (b *bidUsecase) CheckBid(c context.Context, bidId int64) (res domain.Bid, e
 		return
 	}
 
-	resUser, err := b.userRepo.CheckBid(ctx, res.User.userId)
+	resUser, err := b.userRepo.GetByID(ctx, res.User.UserId)
 	if err != nil {
 		return domain.Bid{}, err
 	}
@@ -39,6 +39,7 @@ func (b *bidUsecase) CheckBid(c context.Context, bidId int64) (res domain.Bid, e
 }
 
 func (b *bidUsecase) PlaceBid(c context.Context, u *domain.Bid) (err error) {
+
 	ctx, cancel := context.WithTimeout(c, b.contextTimeout)
 	defer cancel()
 
@@ -48,7 +49,7 @@ func (b *bidUsecase) PlaceBid(c context.Context, u *domain.Bid) (err error) {
 func (b *bidUsecase) CreateNewBid(c context.Context, m *domain.Bid) (err error) {
 	ctx, cancel := context.WithTimeout(c, b.contextTimeout)
 	defer cancel()
-	existedBid, _ := b.CheckBid(ctx, m.bidId)
+	existedBid, _ := b.CheckBid(ctx, m.BidId)
 	if existedBid != (domain.Bid{}) {
 		return domain.ErrConflict
 	}

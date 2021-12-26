@@ -4,16 +4,16 @@ import "context"
 
 // User ...
 type User struct {
-	userId    int64  `json:"id"`
-	name      string `json:"name"`
-	password  string `json:"password"`
-	role      string `json:"role"`
+	UserId    int64  `json:"userId"`
+	Name      string `json:"name"`
+	Password  string `json:"password"`
+	Role      string `json:"role"`
 }
 
 // UserRepository represent the user's repository contract
 type UserRepository interface {
-	SignIn(ctx context.Context, username, password string) (string, error)
-	CheckBid(ctx context.Context, userId int64) (User, error)
+	GetByID(ctx context.Context, UserId int64) (User, error)
+	
 }
 
 // UserUsecase represent the bid's usecases

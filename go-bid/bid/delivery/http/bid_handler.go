@@ -26,8 +26,9 @@ func NewBidHandler(e *echo.Echo, us domain.BidUsecase) {
 	handler := &BidHandler{
 		BUsecase: us,
 	}
-	e.POST("/lock/{bidId}/{ttl}/{price}", handler.CreateNewBid)
-	e.GET("/check/{bidId}", handler.CheckBid)
+	e.POST("/lock/:bidId/:ttl/:price", handler.CreateNewBid)
+	e.GET("/check/:bidId", handler.CheckBid)
+	e.PUT("/bid/:bidId/:price", handler.PlaceBid)
 }
 
 // CheckBid will get bid by given id
@@ -78,6 +79,29 @@ func (b *BidHandler) CreateNewBid(c echo.Context) (err error) {
 
 	return c.JSON(http.StatusCreated, bid)
 }
+
+func (b *BidHandler) PlaceBid(c echo.Context) error {
+	idP, err := strconv.Atoi(c.Param("bidId"))
+	if err != nil {
+		return c.JSON(http.StatusNotFound, domain.ErrNotFound.Error())
+	}
+	a := new(domain.Bid)
+
+	if err := c.Bind(a); err != nil {
+		return echo.ErrNotFound
+	}
+
+	a.BidId = int64(idP)
+
+	ctx := c.Request().Context()
+	err = b.BUsecase.PlaceBid(ctx, a)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, domain.ErrNotFound.Error())
+	}
+
+	return c.JSON(http.StatusOK, a)
+}
+
 
 func getStatusCode(err error) int {
 	if err == nil {

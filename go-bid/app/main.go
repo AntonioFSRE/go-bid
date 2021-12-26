@@ -15,6 +15,7 @@ import (
 	_bidHttpDeliveryMiddleware "github.com/AntonioFSRE/go-bid/bid/delivery/http/middleware"
 	_bidRepo "github.com/AntonioFSRE/go-bid/bid/repository/postgres"
 	_bidUcase "github.com/AntonioFSRE/go-bid/bid/usecase"
+	_userRepo "github.com/AntonioFSRE/go-bid/user/repository/postgres"
 )
 
 func init() {
@@ -61,11 +62,11 @@ func main() {
 	middL := _bidHttpDeliveryMiddleware.InitMiddleware()
 	e.Use(middL.CORS)
 	userRepo := _userRepo.NewPostgresUserRepository(dbConn)
-	u := _bidRepo.NewPostgresBidRepository(dbConn)
+	b := _bidRepo.NewPostgresBidRepository(dbConn)
 
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
-	b := _bidUcase.NewBidUsecase(u, userRepo, timeoutContext)
-	_bidHttpDelivery.NewBidHandler(e, b)
+	u := _bidUcase.NewBidUsecase(b, userRepo, timeoutContext)
+	_bidHttpDelivery.NewBidHandler(e, u)
 
 	log.Fatal(e.Start(viper.GetString("server.address")))
 }

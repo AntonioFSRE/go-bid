@@ -1,26 +1,29 @@
-version: '3'
-
+version: "2.3"
 services:
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: go-bid
+    container_name: go_bid_api
     ports:
       - 9090:9090
+    depends_on:
+      - postgres 
     volumes:
       - ./config.json:/app/config.json
+
   postgres:
     image: postgres
     container_name: go_bid_postgres
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_DB: go_db
     volumes:
        - ./article.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432" 
+    environment:
+      - PGDATABASE=bid
+      - PGUSER=user
+      - PGPASSWORD=password
+      - POSTGRES_PASSWORD=password
   redis:
     image: redis
     environment:

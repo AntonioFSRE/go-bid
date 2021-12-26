@@ -22,7 +22,6 @@ type signInput struct {
 	Password string `json:"password"`
 }
 
-
 type signInResponse struct {
 	Token string `json:"token"`
 }

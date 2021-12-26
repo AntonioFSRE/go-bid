@@ -4,11 +4,9 @@ go 1.16
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
-	github.com/bxcodec/faker v1.4.2
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/go-playground/locales v0.12.1 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
-	github.com/go-sql-driver/mysql v1.3.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/hashicorp/hcl v0.0.0-20180404174102-ef8a98b0bbce // indirect
 	github.com/labstack/echo v3.3.5+incompatible

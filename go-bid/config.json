@@ -1,17 +1,17 @@
 {
-    "debug": true,
-    "server": {
-      "address": ":9090"
-    },
-    "context":{
-      "timeout":2
-    },
-    "db": {
-        "host": "localhost",
-        "port": "5432",
-        "user": "postgres",
-        "pass": "postgres",
-        "name": "go_db"
-    }
-  
+  "debug": true,
+  "server": {
+    "address": ":9090"
+  },
+  "context":{
+    "timeout":2
+  },
+  "database": {
+      "host": "postgres",
+      "port": "5432",
+      "user": "user",
+      "pass": "password",
+      "name": "bid"
   }
+
+}

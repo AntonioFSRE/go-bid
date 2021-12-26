@@ -35,13 +35,13 @@ func (m *postgresBidRepository) fetch(ctx context.Context, query string, args ..
 	result = make([]domain.Bid, 0)
 	for rows.Next() {
 		t := domain.Bid{}
-		userId := int64(0)
+		UserId := int64(0)
 		err = rows.Scan(
-			&t.bidId,
-			&t.ttl,
-			&t.price,
-			&userId,
-			&t.setAt,
+			&t.BidId,
+			&t.Ttl,
+			&t.Price,
+			&UserId,
+			&t.SetAt,
 		)
 
 		if err != nil {
@@ -49,7 +49,7 @@ func (m *postgresBidRepository) fetch(ctx context.Context, query string, args ..
 			return nil, err
 		}
 		t.User = domain.User{
-			userId: userId,
+			UserId: UserId,
 		}
 		result = append(result, t)
 	}
@@ -58,7 +58,7 @@ func (m *postgresBidRepository) fetch(ctx context.Context, query string, args ..
 }
 
 func (m *postgresBidRepository) CheckBid(ctx context.Context, bidId int64) (res domain.Bid, err error) {
-	query := `SELECT bidId,ttl,price
+	query := `SELECT price, ttl, setAt
   						FROM bid WHERE bidId = ?`
 
 	list, err := m.fetch(ctx, query, bidId)
@@ -76,13 +76,13 @@ func (m *postgresBidRepository) CheckBid(ctx context.Context, bidId int64) (res 
 }
 
 func (m *postgresBidRepository) CreateNewBid(ctx context.Context, b *domain.Bid) (err error) {
-	query := `INSERT  bid SET  bidId=? , ttl=? ,price=? ,setAt=? ,userId=?`
+	query := `INSERT  bid SET  bidId=? , ttl=? ,price=? ,setAt=now() ,userId=?`
 	stmt, err := m.Conn.PrepareContext(ctx, query)
 	if err != nil {
 		return
 	}
 
-	res, err := stmt.ExecContext(ctx, b.bidId, b.ttl, b.price, b.setAt, b.User.userId)
+	res, err := stmt.ExecContext(ctx, b.BidId, b.Ttl, b.Price, b.SetAt, b.User.UserId)
 	if err != nil {
 		return
 	}
@@ -90,30 +90,30 @@ func (m *postgresBidRepository) CreateNewBid(ctx context.Context, b *domain.Bid)
 	if err != nil {
 		return
 	}
-	b.bidId = lastID
+	b.BidId = lastID
 	return
 }
 
 func (m *postgresBidRepository) PlaceBid(ctx context.Context, u *domain.Bid) (err error) {
-	query := `UPDATE bid set price=?, userId=? WHERE bidId = ?`
+	query := `UPDATE bid set price=?, userId=? WHERE bidId = ? AND price < ?`
 
 	stmt, err := m.Conn.PrepareContext(ctx, query)
 	if err != nil {
-		return
+		return  err
 	}
 
-	res, err := stmt.ExecContext(ctx, u.price, u.User.bidId)
+	res, err := stmt.ExecContext(ctx, u.Price, u.User.UserId)
 	if err != nil {
-		return
+		return err
 	}
 	affect, err := res.RowsAffected()
 	if err != nil {
-		return
+		return err
 	}
 	if affect != 1 {
 		err = fmt.Errorf("Weird  Behavior. Total Affected: %d", affect)
-		return
+		return err
 	}
 
-	return
+	return 
 }
