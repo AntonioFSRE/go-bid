@@ -11,11 +11,11 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 
+	_userRepo "github.com/AntonioFSRE/go-bid/auth/repository/postgres"
 	_bidHttpDelivery "github.com/AntonioFSRE/go-bid/bid/delivery/http"
 	_bidHttpDeliveryMiddleware "github.com/AntonioFSRE/go-bid/bid/delivery/http/middleware"
 	_bidRepo "github.com/AntonioFSRE/go-bid/bid/repository/postgres"
 	_bidUcase "github.com/AntonioFSRE/go-bid/bid/usecase"
-	_userRepo "github.com/AntonioFSRE/go-bid/user/repository/postgres"
 )
 
 func init() {
