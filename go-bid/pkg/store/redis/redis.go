@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/AntonioFSRE/go-bid/pkg/logger"
 	"github.com/AntonioFSRE/go-bid/pkg/store"
 	"github.com/go-redis/redis/v8"
 )

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/AntonioFSRE/go-bid/domain"
 	"github.com/sirupsen/logrus"
@@ -75,34 +76,31 @@ func (m *postgresBidRepository) CheckBid(ctx context.Context, bidId int64) (res 
 	return 
 }
 
-func (m *postgresBidRepository) CreateNewBid(ctx context.Context, b *domain.Bid) (err error) {
-	query := `INSERT  bid SET  bidId=? , ttl=? ,price=? ,setAt=now() ,userId=?`
+func (m *postgresBidRepository) CreateNewBid(ctx context.Context, bidId int64, ttl int64, price int64) (err error) {
+	query := `INSERT  bid SET  bidId=? , ttl=? ,price=? ,setAt=NOW() ,userId=1`
+	setAt:=time.Now() 
+	userId:=1
 	stmt, err := m.Conn.PrepareContext(ctx, query)
 	if err != nil {
 		return
 	}
 
-	res, err := stmt.ExecContext(ctx, b.BidId, b.Ttl, b.Price, b.SetAt, b.User.UserId)
+	res, err := stmt.ExecContext(ctx, bidId, ttl, price, setAt, userId)
 	if err != nil {
 		return
 	}
-	lastID, err := res.LastInsertId()
-	if err != nil {
-		return
-	}
-	b.BidId = lastID
 	return
 }
 
-func (m *postgresBidRepository) PlaceBid(ctx context.Context, u *domain.Bid) (err error) {
+func (m *postgresBidRepository) PlaceBid(ctx context.Context, bidId int64, price int64) (err error) {
 	query := `UPDATE bid set price=?, userId=? WHERE bidId = ? AND price < ?`
-
+	userId:=2
 	stmt, err := m.Conn.PrepareContext(ctx, query)
 	if err != nil {
 		return  err
 	}
 
-	res, err := stmt.ExecContext(ctx, u.Price, u.User.UserId)
+	res, err := stmt.ExecContext(ctx, price, userId)
 	if err != nil {
 		return err
 	}

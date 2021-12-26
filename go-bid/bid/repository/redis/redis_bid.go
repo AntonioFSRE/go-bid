@@ -6,6 +6,7 @@ import (
 
 	"github.com/AntonioFSRE/go-bid/bid/repository"
 	"github.com/AntonioFSRE/go-bid/domain"
+	"github.com/AntonioFSRE/go-bid/pkg/utils"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
