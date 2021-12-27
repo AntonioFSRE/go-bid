@@ -39,24 +39,26 @@ func (b *bidUsecase) CheckBid(c context.Context, bidId int64) (res domain.Bid, e
 	return
 }
 
-func (b *bidUsecase) PlaceBid(c context.Context, bidId int64, price int64) (err error) {
+func (b *bidUsecase) PlaceBid(c context.Context, u *domain.Bid) (err error) {
 
 	ctx, cancel := context.WithTimeout(c, b.contextTimeout)
 	defer cancel()
 
-	return b.bidRepo.PlaceBid(ctx, bidId, price)
+	u.User.UserId = 2
+	return b.bidRepo.PlaceBid(ctx, u)
 }
 
-func (b *bidUsecase) CreateNewBid(c context.Context, bidId int64, ttl int64, price int64) (err error) {
-
+func (b *bidUsecase) CreateNewBid(c context.Context, m *domain.Bid) (err error) {
 
 	ctx, cancel := context.WithTimeout(c, b.contextTimeout)
 	defer cancel()
-	existedBid, _ := b.CheckBid(ctx, bidId)
+	existedBid, _ := b.CheckBid(ctx, m.BidId)
 	if existedBid != (domain.Bid{}) {
 		return domain.ErrConflict
 	}
 
-	err = b.bidRepo.CreateNewBid(ctx, bidId, ttl, price)
+	m.User.UserId = 1
+	m.SetAt = time.Now()
+	err = b.bidRepo.CreateNewBid(ctx, m)
 	return
 }

@@ -16,14 +16,14 @@ type Bid struct {
 
 // BidUsecase represent the bid's usecases
 type BidUsecase interface {
-	CreateNewBid(ctx context.Context, bidId int64, ttl int64, price int64) error
+	CreateNewBid(ctx context.Context, b *Bid) error
 	CheckBid(ctx context.Context, bidId int64) (Bid, error)
-	PlaceBid(ctx context.Context, bidId int64, price int64) error 
+	PlaceBid(ctx context.Context, u *Bid) error 
 }
 
 // BidRepository represent the bid's repository contract
 type BidRepository interface {
-	CreateNewBid(ctx context.Context, bidId int64, ttl int64, price int64) error
+	CreateNewBid(ctx context.Context, b *Bid) error
 	CheckBid(ctx context.Context, bidId int64) (Bid, error)
-	PlaceBid(ctx context.Context, bidId int64, price int64) (error)
+	PlaceBid(ctx context.Context, u *Bid) (error)
 }
