@@ -1,5 +1,5 @@
 # go-bid
 ## Getting Started
 ### Docker Compose
-    make // or make build
+    make build
     make up
