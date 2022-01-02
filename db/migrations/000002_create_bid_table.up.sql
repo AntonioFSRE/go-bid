@@ -1,10 +1,10 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
-CREATE TABLE bid (
-    bidId          uuid PRIMARY KEY,
-    userId    uuid NOT NULL REFERENCES user (userId) ON DELETE CASCADE ON UPDATE CASCADE,
-    ttl       varchar(250) NOT NULL CHECK (title <> ''),
-    price  int NOT NULL CHECK (price <> ''),
+CREATE TABLE public.bid (
+    id          uuid PRIMARY KEY,
+    user_id    uuid NOT NULL REFERENCES user (id),
+    ttl       int(50) NOT NULL,
+    price  int NOT NULL,
     setAt  timestamp with time zone NOT NULL DEFAULT current_timestamp
 );

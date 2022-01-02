@@ -8,7 +8,6 @@ import (
 	bidRepository "github.com/AntonioFSRE/go-bid/internal/bid/repository"
 	bidUseCase "github.com/AntonioFSRE/go-bid/internal/bid/usecase"
 	"github.com/labstack/echo/v4/middleware"
-	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func (s *Server) middleware() {
@@ -33,10 +32,6 @@ func (s *Server) handlers() {
 		bidRedisRepo,
 		s.log,
 	)
-
-	if s.cfg.Server.Debug {
-		s.router.GET("/swagger/*", echoSwagger.WrapHandler)
-	}
 
 	api := s.router.Group("/api")
 

@@ -1,5 +1,5 @@
 server:
-  debug: true
+  debug: false
   app_version: 1.0.0
   addr: :5000
   jwt_secret: accesskey
@@ -21,14 +21,5 @@ redis:
 
 cookie:
   access_token:
-    max_age: 300 # 5 minutes
     secure: false
     http_only: true
-
-  refresh_token:
-    max_age: 86400 # 24 hours
-    secure: false
-    http_only: true
-
-logger:
-  level:

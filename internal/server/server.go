@@ -1,7 +1,6 @@
 package server
 
 import (
-	//_ "github.com/AntonioFSRE/go-bid/docs"
 	"github.com/AntonioFSRE/go-bid/internal/config"
 	"github.com/AntonioFSRE/go-bid/pkg/logger"
 	"github.com/AntonioFSRE/go-bid/pkg/store/redis"
