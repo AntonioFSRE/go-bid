@@ -23,25 +23,14 @@ func Auth(
 				return echo.ErrUnauthorized
 			}
 
-			if err := utils.VerifyRefreshToken(
-				c,
-				cfg.Server.JwtRefreshSecret,
-				log,
-			); err != nil {
-				log.Errorf("verifyRefreshToken: %v", err)
-				return echo.ErrUnauthorized
-			}
-
 			userID := utils.GetCtxID(c)
 			accessID := utils.GetCtxAccessID(c)
-			refreshID := utils.GetCtxRefreshID(c)
 
 			if err := verifyRedis(
 				userID,
 				userUseCase,
 				&utils.TokenDetails{
 					AtID: accessID,
-					RtID: refreshID,
 				},
 				log,
 			); err != nil {

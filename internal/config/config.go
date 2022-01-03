@@ -20,7 +20,6 @@ type (
 		AppVersion       string `mapstructure:"app_version"`
 		Addr             string
 		JwtSecret        string `mapstructure:"jwt_secret"`
-		JwtRefreshSecret string `mapstructure:"jwt_refresh_secret"`
 	}
 
 	DBConfig struct {
@@ -50,7 +49,6 @@ type (
 
 	CookieConfig struct {
 		AccessToken  TokenConfig `mapstructure:"access_token"`
-		RefreshToken TokenConfig `mapstructure:"refresh_token"`
 	}
 
 	Logger struct {

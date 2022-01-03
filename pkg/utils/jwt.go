@@ -3,9 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"time"
 
-	"github.com/AntonioFSRE/go-bid/pkg/logger"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -13,18 +11,12 @@ import (
 
 type JWTConfig struct {
 	JWTSecret        string
-	JWTRefreshSecret string
-	AtExpires        int
-	RtExpires        int
 }
 
 type TokenDetails struct {
 	AtID         uuid.UUID
 	RtID         uuid.UUID
-	AtExpires    int64
-	RtExpires    int64
 	AccessToken  string
-	RefreshToken string
 }
 
 type Claims struct {
@@ -37,15 +29,8 @@ func GenerateToken(cfg *JWTConfig, id uuid.UUID) (*TokenDetails, error) {
 	atID := uuid.New()
 	rtID := uuid.New()
 
-	atExpires := getExp(cfg.AtExpires)
-	rtExpires := getExp(cfg.RtExpires)
 
-	accessToken, err := createToken(atID, id, atExpires, cfg.JWTSecret)
-	if err != nil {
-		return nil, err
-	}
-
-	refreshToken, err := createToken(rtID, id, rtExpires, cfg.JWTRefreshSecret)
+	accessToken, err := createToken(atID, id, cfg.JWTSecret)
 	if err != nil {
 		return nil, err
 	}
@@ -53,28 +38,20 @@ func GenerateToken(cfg *JWTConfig, id uuid.UUID) (*TokenDetails, error) {
 	return &TokenDetails{
 		AtID:         atID,
 		RtID:         rtID,
-		AtExpires:    atExpires,
-		RtExpires:    rtExpires,
 		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
 	}, nil
 }
 
-func getExp(seconds int) int64 {
-	return time.Now().Add(time.Second * time.Duration(seconds)).Unix()
-}
 
 func createToken(
 	id uuid.UUID,
 	userID uuid.UUID,
-	exp int64,
 	secret string,
 ) (string, error) {
 	claims := Claims{
 		id.String(),
 		userID.String(),
 		jwt.StandardClaims{
-			ExpiresAt: exp,
 		},
 	}
 
@@ -85,30 +62,6 @@ func createToken(
 	}
 
 	return tokenString, nil
-}
-
-func VerifyRefreshToken(
-	c echo.Context,
-	secret string,
-	log logger.Logger,
-) error {
-	refreshCookie, err := c.Cookie("refresh_token")
-	if err != nil {
-		log.Errorf("c.Cookie: %v", err)
-		return err
-	}
-
-	if err = ValidateToken(
-		c,
-		"refresh",
-		refreshCookie.Value,
-		secret,
-	); err != nil {
-		log.Errorf("validateToken: %v", err)
-		return err
-	}
-
-	return nil
 }
 
 func ValidateToken(

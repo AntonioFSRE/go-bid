@@ -2,7 +2,6 @@ package repository
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/AntonioFSRE/go-bid/internal/domain/models"
 	"github.com/AntonioFSRE/go-bid/internal/domain/repositories"
@@ -59,16 +58,13 @@ func (r *redisRepository) GetTokenInfo(
 func (r *redisRepository) SetToken(
 	id uuid.UUID,
 	tokenID uuid.UUID,
-	exp int64,
 ) error {
-	t := time.Unix(exp, 0)
-	now := time.Now()
 
 	if err := r.redis.Set(utils.GetRedisKey(
 		authPrefix,
 		id.String(),
 		tokenID.String(),
-	), id.String(), t.Sub(now)); err != nil {
+	), id.String()); err != nil {
 		return echo.ErrInternalServerError
 	}
 

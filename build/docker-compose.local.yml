@@ -16,10 +16,11 @@ services:
       - postgres
       - redis
     depends_on:
-      - db
+      - postgres
       - redis
 
-  db:
+  postgres:
+    container_name: postgres
     image: postgres:alpine
     restart: always
     environment:

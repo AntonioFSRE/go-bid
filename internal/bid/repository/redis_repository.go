@@ -49,7 +49,7 @@ func (r *redisRepository) SetBid(
 	if err := r.redis.Set(utils.GetRedisKey(
 		prefix,
 		strconv.FormatInt(bid.ID,10),
-	), res, exp); err != nil {
+	), res); err != nil {
 		return echo.ErrInternalServerError
 	}
 

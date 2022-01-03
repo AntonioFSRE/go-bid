@@ -12,7 +12,3 @@ func GetCtxID(c echo.Context) uuid.UUID {
 func GetCtxAccessID(c echo.Context) uuid.UUID {
 	return c.Get("access_id").(uuid.UUID)
 }
-
-func GetCtxRefreshID(c echo.Context) uuid.UUID {
-	return c.Get("refresh_id").(uuid.UUID)
-}

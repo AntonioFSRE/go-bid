@@ -2,7 +2,6 @@ package redis
 
 import (
 	"context"
-	"time"
 
 	"github.com/AntonioFSRE/go-bid/pkg/logger"
 	"github.com/AntonioFSRE/go-bid/pkg/store"
@@ -11,7 +10,7 @@ import (
 
 type Store interface {
 	Get(key string) (string, error)
-	Set(key string, value interface{}, expiration time.Duration) error
+	Set(key string, value interface{}) error
 	Del(keys ...string) error
 	DelAll(pattern string) error
 	store.Store
@@ -73,13 +72,12 @@ func (r *rdb) Get(key string) (string, error) {
 func (r *rdb) Set(
 	key string,
 	value interface{},
-	expiration time.Duration,
 ) error {
 	if err := r.client.Set(
 		ctx,
 		key,
 		value,
-		expiration,
+		0,
 	).Err(); err != nil {
 		r.log.Errorf("redis.Set: %v", err)
 		return err

@@ -17,13 +17,6 @@ func ClearCookies(
 			c.SetCookie(&http.Cookie{
 				Name:   "access_token",
 				Path:   "/",
-				MaxAge: -1,
-			})
-
-			c.SetCookie(&http.Cookie{
-				Name:   "refresh_token",
-				Path:   "/",
-				MaxAge: -1,
 			})
 
 			return next(c)

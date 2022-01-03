@@ -98,19 +98,8 @@ func (h *handler) setCookies(c echo.Context, user *models.AuthUser) {
 		Name:     "access_token",
 		Value:    user.AccessToken,
 		Path:     "/",
-		MaxAge:   h.cfg.Cookie.AccessToken.MaxAge,
 		Secure:   h.cfg.Cookie.AccessToken.Secure,
 		HttpOnly: h.cfg.Cookie.AccessToken.HttpOnly,
-		SameSite: http.SameSiteStrictMode,
-	})
-
-	c.SetCookie(&http.Cookie{
-		Name:     "refresh_token",
-		Value:    user.RefreshToken,
-		Path:     "/",
-		MaxAge:   h.cfg.Cookie.RefreshToken.MaxAge,
-		Secure:   h.cfg.Cookie.RefreshToken.Secure,
-		HttpOnly: h.cfg.Cookie.RefreshToken.HttpOnly,
 		SameSite: http.SameSiteStrictMode,
 	})
 }

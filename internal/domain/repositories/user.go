@@ -15,6 +15,6 @@ type (
 	RedisUserRepository interface {
 		GetByID(id uuid.UUID) (models.User, error)
 		GetTokenInfo(id uuid.UUID, tokenID uuid.UUID) (uuid.UUID, error)
-		SetToken(id uuid.UUID, tokenID uuid.UUID, exp int64) error
+		SetToken(id uuid.UUID, tokenID uuid.UUID) error
 	}
 )

@@ -13,9 +13,6 @@ func (u *usecase) Auth(user *models.User) (*models.AuthUser, error) {
 	td, err := utils.GenerateToken(
 		&utils.JWTConfig{
 			JWTSecret:        u.cfg.Server.JwtSecret,
-			JWTRefreshSecret: u.cfg.Server.JwtRefreshSecret,
-			AtExpires:        u.cfg.Cookie.AccessToken.MaxAge,
-			RtExpires:        u.cfg.Cookie.RefreshToken.MaxAge,
 		},
 		user.ID,
 	)
@@ -27,7 +24,6 @@ func (u *usecase) Auth(user *models.User) (*models.AuthUser, error) {
 	if err := u.redisRepository.SetToken(
 		user.ID,
 		td.AtID,
-		td.AtExpires,
 	); err != nil {
 		u.log.Errorf("auth.redisRepository.SetToken: %v", err)
 		return nil, err
@@ -36,7 +32,6 @@ func (u *usecase) Auth(user *models.User) (*models.AuthUser, error) {
 	if err := u.redisRepository.SetToken(
 		user.ID,
 		td.RtID,
-		td.RtExpires,
 	); err != nil {
 		u.log.Errorf("auth.redisRepository.SetToken: %v", err)
 		return nil, err
@@ -45,9 +40,7 @@ func (u *usecase) Auth(user *models.User) (*models.AuthUser, error) {
 	return &models.AuthUser{
 		User:         user,
 		TokenType:    "Bearer",
-		ExpiresIn:    u.cfg.Cookie.AccessToken.MaxAge,
 		AccessToken:  td.AccessToken,
-		RefreshToken: td.RefreshToken,
 	}, nil
 }
 

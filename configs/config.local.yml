@@ -5,9 +5,9 @@ server:
   jwt_secret: accesskey
   jwt_refresh_secret: refreshkey
 
-db:
+postgres:
   driver: postgres
-  host: localhost
+  host: postgres
   port: 5432
   user: postgres
   password: postgres
